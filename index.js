@@ -29,6 +29,7 @@ mongoose
 // model
 
 const userModel = require("./model/usersModel.js");
+const Products = require("./model/Products.js");
 app.post("/api/register", async (req, res) => {
   const { name, email, password } = req.body;
   try {
@@ -62,6 +63,27 @@ app.post('/api/login', async(req,res) => {
     } catch (error) {
      return res.status(404).json(error.message)
     }
+})
+app.get('/api/products', async(req, res) =>{
+  try {
+    const products = await Products.find();
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch products" });
+  }
+
+});
+
+app.get("/api/products/:id", async(req, res) => {
+  try {
+    const product = await Products.findById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    res.json(product);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 })
 
 app.get("/", (req, res) => {
